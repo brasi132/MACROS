@@ -2,64 +2,119 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Botones que copian texto</title>
+  <title>Copiar textos con bloques de color</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f3f3f3;
+      padding: 30px;
+    }
+
+    .grupo {
       padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+    }
+
+    .utilidad {
+      background-color: #e67e22; /* naranja */
+    }
+
+    .comunicado {
+      background-color: #16a085; /* verde */
+    }
+
+    .formato {
+      background-color: #3498db; /* azul */
+    }
+
+    .relacionado {
+      background-color: #9b59b6; /* violeta */
+    }
+
+    .titulo-seccion {
+      font-size: 20px;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
     }
 
     .boton {
       display: block;
-      width: 300px;
-      margin: 10px auto;
-      padding: 15px;
-      font-size: 16px;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      font-size: 15px;
       color: white;
-      border: none;
+      background-color: rgba(0, 0, 0, 0.1); /* oscurecer un poco para contraste */
+      border: 2px solid white;
       border-radius: 5px;
       cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .utilidad    { background-color: #e67e22; }
-    .comunicado  { background-color: #16a085; }
-    .formato     { background-color: #3498db; }
-    .relacionado { background-color: #9b59b6; }
+    .boton:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
 
     .mensaje {
       text-align: center;
       color: green;
       margin-top: 20px;
+      font-weight: bold;
+    }
+
+    /* Ajuste para dispositivos pequeños */
+    @media (max-width: 600px) {
+      .boton {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <button class="boton utilidad" onclick="copiarTexto('Texto de Info')">Info</button>
-  <button class="boton utilidad" onclick="copiarTexto('Texto de Cargado')">Cargado</button>
-  <button class="boton utilidad" onclick="copiarTexto('Texto de Rechazo')">Rechazo</button>
+  <!-- UTILIDAD -->
+  <div class="grupo utilidad">
+    <div class="titulo-seccion">UTILIDAD</div>
+    <button class="boton" onclick="copiarTexto('Texto para Info')">Info</button>
+    <button class="boton" onclick="copiarTexto('Texto para Cargado')">Cargado</button>
+    <button class="boton" onclick="copiarTexto('Texto para Rechazo')">Rechazo</button>
+  </div>
 
-  <button class="boton comunicado" onclick="copiarTexto('Texto de ALIAS Comunicado')">ALIAS Comunicado</button>
-  <button class="boton comunicado" onclick="copiarTexto('Texto de Titular Comunicado')">Titular Comunicado</button>
+  <!-- COMUNICADO -->
+  <div class="grupo comunicado">
+    <div class="titulo-seccion">COMUNICADO</div>
+    <button class="boton" onclick="copiarTexto('Texto para ALIAS Comunicado')">ALIAS Comunicado</button>
+    <button class="boton" onclick="copiarTexto('Texto para Titular Comunicado')">Titular Comunicado</button>
+  </div>
 
-  <button class="boton formato" onclick="copiarTexto('Texto de ALIAS Enros')">ALIAS Enros</button>
-  <button class="boton formato" onclick="copiarTexto('Texto de Titular Enros')">Titular Enros</button>
+  <!-- FORMATO -->
+  <div class="grupo formato">
+    <div class="titulo-seccion">FORMATO</div>
+    <button class="boton" onclick="copiarTexto('Texto para ALIAS Enros')">ALIAS Enros</button>
+    <button class="boton" onclick="copiarTexto('Texto para Titular Enros')">Titular Enros</button>
+  </div>
 
-  <button class="boton relacionado" onclick="copiarTexto('Texto de ALIAS Rechazo')">ALIAS Rechazo</button>
-  <button class="boton relacionado" onclick="copiarTexto('Texto de Titular Rechazo')">Titular Rechazo</button>
+  <!-- RELACIONADO -->
+  <div class="grupo relacionado">
+    <div class="titulo-seccion">RELACIONADO</div>
+    <button class="boton" onclick="copiarTexto('Texto para ALIAS Rechazo')">ALIAS Rechazo</button>
+    <button class="boton" onclick="copiarTexto('Texto para Titular Rechazo')">Titular Rechazo</button>
+  </div>
 
   <div class="mensaje" id="mensaje"></div>
 
   <script>
     function copiarTexto(texto) {
-      navigator.clipboard.writeText(texto).then(function() {
-        document.getElementById('mensaje').textContent = 'Texto copiado: ' + texto;
+      navigator.clipboard.writeText(texto).then(function () {
+        document.getElementById('mensaje').textContent = '✅ Copiado: ' + texto;
         setTimeout(() => {
           document.getElementById('mensaje').textContent = '';
         }, 2000);
-      }, function(err) {
-        alert('Error al copiar el texto: ', err);
+      }, function (err) {
+        alert('❌ Error al copiar el texto: ', err);
       });
     }
   </script>
