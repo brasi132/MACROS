@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Botones que copian texto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      padding: 20px;
+    }
+
+    .boton {
+      display: block;
+      width: 300px;
+      margin: 10px auto;
+      padding: 15px;
+      font-size: 16px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .utilidad    { background-color: #e67e22; }
+    .comunicado  { background-color: #16a085; }
+    .formato     { background-color: #3498db; }
+    .relacionado { background-color: #9b59b6; }
+
+    .mensaje {
+      text-align: center;
+      color: green;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="boton utilidad" onclick="copiarTexto('Texto de Info')">Info</button>
+  <button class="boton utilidad" onclick="copiarTexto('Texto de Cargado')">Cargado</button>
+  <button class="boton utilidad" onclick="copiarTexto('Texto de Rechazo')">Rechazo</button>
+
+  <button class="boton comunicado" onclick="copiarTexto('Texto de ALIAS Comunicado')">ALIAS Comunicado</button>
+  <button class="boton comunicado" onclick="copiarTexto('Texto de Titular Comunicado')">Titular Comunicado</button>
+
+  <button class="boton formato" onclick="copiarTexto('Texto de ALIAS Enros')">ALIAS Enros</button>
+  <button class="boton formato" onclick="copiarTexto('Texto de Titular Enros')">Titular Enros</button>
+
+  <button class="boton relacionado" onclick="copiarTexto('Texto de ALIAS Rechazo')">ALIAS Rechazo</button>
+  <button class="boton relacionado" onclick="copiarTexto('Texto de Titular Rechazo')">Titular Rechazo</button>
+
+  <div class="mensaje" id="mensaje"></div>
+
+  <script>
+    function copiarTexto(texto) {
+      navigator.clipboard.writeText(texto).then(function() {
+        document.getElementById('mensaje').textContent = 'Texto copiado: ' + texto;
+        setTimeout(() => {
+          document.getElementById('mensaje').textContent = '';
+        }, 2000);
+      }, function(err) {
+        alert('Error al copiar el texto: ', err);
+      });
+    }
+  </script>
+</body>
+</html>
