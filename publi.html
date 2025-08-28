@@ -16,24 +16,11 @@
       margin-bottom: 25px;
     }
 
-    .utilidad {
-      background-color: #e67e22; /* naranja */
-    }
-
-    .comunicado {
-      background-color: #16a085; /* verde */
-    }
-
-    .formato {
-      background-color: #3498db; /* azul */
-    }
-
-    .relacionado {
-      background-color: #9b59b6; /* violeta */
-    }
-   .media {
-      background-color: #808080; /* violeta */
-    }
+    .utilidad { background-color: #e67e22; }
+    .comunicado { background-color: #16a085; }
+    .formato { background-color: #3498db; }
+    .relacionado { background-color: #9b59b6; }
+    .media { background-color: #808080; }
 
     .titulo-seccion {
       font-size: 20px;
@@ -50,16 +37,13 @@
       padding: 12px;
       font-size: 15px;
       color: white;
-      background-color: rgba(0, 0, 0, 0.1); /* oscurecer un poco para contraste */
+      background-color: rgba(0, 0, 0, 0.1);
       border: 2px solid white;
       border-radius: 5px;
       cursor: pointer;
       transition: background 0.2s;
     }
-
-    .boton:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
+    .boton:hover { background-color: rgba(255, 255, 255, 0.2); }
 
     .mensaje {
       text-align: center;
@@ -68,11 +52,18 @@
       font-weight: bold;
     }
 
+    input {
+      width: 95%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
     /* Ajuste para dispositivos pequeños */
     @media (max-width: 600px) {
-      .boton {
-        font-size: 14px;
-      }
+      .boton { font-size: 14px; }
     }
   </style>
 </head>
@@ -84,7 +75,7 @@
     <button class="boton" onclick="copiarTexto('👋 ¡Bienvenido a la mejor experiencia de entretenimiento! 🥳\n✨ SOMOS 300VIP ✨ \nDisfrutá de una PL4TAF0RMA confiable con +2000 jueg0s 0nline 🎮 \n📍 C4RG4 MÍNIMA: $2000 \n📍 RET1R0 MÍNIMO: $5000 \n🕐 Atención personalizada las 24hs.')">Info</button>
     <button class="boton" onclick="copiarTexto('Listo saldo cargado!\nimportante\nen caso de no llegar a los dos tildes, podes encontrar nuestro actual numero en la plataforma o usar el chat\nm05.bet300vip.com')">Cargado</button>
     <button class="boton" onclick="copiarTexto('¡Felicidades, te pido que me des el cbu, titular y monto para poder transferir el premio, gracias!  🤩 🍀 🥳')">Retiro</button>
-<button class="boton" onclick="copiarTexto('¡Felicidades, Recorda que puede pedir un retiro nuevamente despues de las  24HS, gracias!  🤩 🍀 🥳')">Retiro Realizado</button>
+    <button class="boton" onclick="copiarTexto('¡Felicidades, Recorda que puede pedir un retiro nuevamente despues de las  24HS, gracias!  🤩 🍀 🥳')">Retiro Realizado</button>
   </div>
 
   <!-- COMUNICADO -->
@@ -108,6 +99,12 @@
     <button class="boton" onclick="copiarTexto('0000003100066798919683\nJuan Pedro Albornoz - Mercado Pago')">CVU ALBORNOZ</button>
   </div>
 
+  <!-- REINVITACIÓN -->
+  <div class="grupo media">
+    <div class="titulo-seccion">REINVITACIÓN</div>
+    <input type="text" id="usuario" placeholder="Escribe un nombre de usuario...">
+    <button class="boton" onclick="generarMensaje()">Generar y Copiar</button>
+  </div>
 
   <div class="mensaje" id="mensaje"></div>
 
@@ -121,6 +118,63 @@
       }, function (err) {
         alert('❌ Error al copiar el texto: ', err);
       });
+    }
+
+    function generarMensaje() {
+      const usuario = document.getElementById("usuario").value.trim();
+      if (!usuario) {
+        alert("⚠️ Por favor, escribe un nombre de usuario.");
+        return;
+      }
+
+      // 40 variaciones de mensajes
+      const variaciones = [
+        "🎉 Volvé a jugar con nosotros " + usuario + " 🤩 Te estamos esperando 🍀 👉 m05.bet300vip.com",
+        "🔥 " + usuario + " regresá ya 👉 Te esperan premios increíbles 🎁 m05.bet300vip.com",
+        "🥳 Hola " + usuario + " 💎 La diversión continúa, entrá ahora 🚀 m05.bet300vip.com",
+        "🎮 " + usuario + " tus fichas te esperan ⚡ No te pierdas la acción 💥 m05.bet300vip.com",
+        "🍀 " + usuario + " hoy puede ser tu día de suerte ✨ Vení a jugar 🎉 m05.bet300vip.com",
+        "🚀 " + usuario + " la aventura continúa, volvé a girar 🎡 m05.bet300vip.com",
+        "🎰 " + usuario + " las máquinas están listas para vos 🔥 m05.bet300vip.com",
+        "💎 " + usuario + " no dejes pasar tu próxima oportunidad 🎉 m05.bet300vip.com",
+        "🎯 " + usuario + " el jackpot te espera, no faltes 💥 m05.bet300vip.com",
+        "🎉 " + usuario + " la suerte llama a tu puerta 🚪 Vení ya 🍀 m05.bet300vip.com",
+        "🔥 Volvé " + usuario + " 🤩 Estamos listos con premios 🎁 👉 m05.bet300vip.com",
+        "🥳 " + usuario + " la diversión nunca termina 💎 Unite otra vez 🚀 m05.bet300vip.com",
+        "🎮 Hola " + usuario + " 👾 Te esperan miles de juegos 🎉 m05.bet300vip.com",
+        "🍀 " + usuario + " confiá en tu suerte ✨ Volvé a ganar 🎉 m05.bet300vip.com",
+        "🚀 " + usuario + " tu próxima victoria comienza ahora ⚡ m05.bet300vip.com",
+        "🎰 " + usuario + " animate otra vez 🔥 Lo mejor está por venir m05.bet300vip.com",
+        "💎 " + usuario + " sumate de nuevo 🎉 La diversión sigue 👉 m05.bet300vip.com",
+        "🎯 " + usuario + " la suerte está de tu lado 🍀 Jugá ya m05.bet300vip.com",
+        "🎉 " + usuario + " premios y diversión te esperan 🤩 m05.bet300vip.com",
+        "🔥 " + usuario + " tenés otra chance de ganar 🎁 👉 m05.bet300vip.com",
+        "🥳 Volvé " + usuario + " 💎 Hay sorpresas increíbles 🚀 m05.bet300vip.com",
+        "🎮 " + usuario + " el casino online te espera 👾 m05.bet300vip.com",
+        "🍀 " + usuario + " hoy podés volver a ganar ✨ Jugá ya 🎉 m05.bet300vip.com",
+        "🚀 " + usuario + " la emoción sigue, volvé al juego ⚡ m05.bet300vip.com",
+        "🎰 " + usuario + " los jackpots siguen creciendo 🔥 m05.bet300vip.com",
+        "💎 " + usuario + " la fiesta continúa 🎉 No faltes 👉 m05.bet300vip.com",
+        "🎯 " + usuario + " no pierdas tu chance 💥 Te esperamos m05.bet300vip.com",
+        "🎉 " + usuario + " más fichas, más premios 🤩 Jugá ya 🍀 m05.bet300vip.com",
+        "🔥 Hola " + usuario + " 👑 Tu trono te espera en el casino 👉 m05.bet300vip.com",
+        "🥳 " + usuario + " hoy es tu oportunidad de brillar 💎 m05.bet300vip.com",
+        "🎮 " + usuario + " volvamos a la diversión 👾 m05.bet300vip.com",
+        "🍀 " + usuario + " confiá en tu intuición ✨ Volvé 🎉 m05.bet300vip.com",
+        "🚀 " + usuario + " un nuevo desafío te espera ⚡ m05.bet300vip.com",
+        "🎰 " + usuario + " tus fichas están listas 🔥 m05.bet300vip.com",
+        "💎 " + usuario + " más chances, más premios 🎉 Jugá 👉 m05.bet300vip.com",
+        "🎯 " + usuario + " hoy podés dar el golpe ganador 💥 m05.bet300vip.com",
+        "🎉 " + usuario + " no te pierdas la acción 🤩 Te esperamos 🍀 m05.bet300vip.com",
+        "🔥 " + usuario + " el momento es ahora 🎁 Volvé 👉 m05.bet300vip.com",
+        "🥳 " + usuario + " no pares de divertirte 💎 m05.bet300vip.com",
+        "🎮 " + usuario + " sumate otra vez 👾 ¡La suerte está lista! m05.bet300vip.com",
+        "🍀 " + usuario + " vení a buscar tu premio ✨ Te esperamos 🎉 m05.bet300vip.com"
+      ];
+
+      const randomIndex = Math.floor(Math.random() * variaciones.length);
+      const mensaje = variaciones[randomIndex];
+      copiarTexto(mensaje);
     }
   </script>
 </body>
