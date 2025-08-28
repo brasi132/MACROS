@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Copiar textos con bloques de color</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      padding: 30px;
+    }
 
+    .grupo {
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+    }
+
+    .utilidad {
+      background-color: #e67e22; /* naranja */
+    }
+
+    .comunicado {
+      background-color: #16a085; /* verde */
+    }
+
+    .formato {
+      background-color: #3498db; /* azul */
+    }
+
+    .relacionado {
+      background-color: #9b59b6; /* violeta */
+    }
+
+    .titulo-seccion {
+      font-size: 20px;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .boton {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      font-size: 15px;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.1); /* oscurecer un poco para contraste */
+      border: 2px solid white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .boton:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .mensaje {
+      text-align: center;
+      color: green;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    /* Ajuste para dispositivos pequeños */
+    @media (max-width: 600px) {
+      .boton {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- UTILIDAD -->
+  <div class="grupo utilidad">
+    <div class="titulo-seccion">UTILIDAD</div>
+    <button class="boton" onclick="copiarTexto('👋 ¡Bienvenido a la mejor experiencia de entretenimiento! 🥳\n✨ SOMOS 300VIP ✨ \nDisfrutá de una PL4TAF0RMA confiable con +2000 jueg0s 0nline 🎮 \n📍 C4RG4 MÍNIMA: $2000 \n📍 RET1R0 MÍNIMO: $5000 \n🕐 Atención personalizada las 24hs.')">Info</button>
+    <button class="boton" onclick="copiarTexto('Listo saldo cargado!\nimportante\nen caso de no llegar a los dos tildes, podes encontrar nuestro actual numero en la plataforma o usar el chat\nm05.bet300vip.com')">Cargado</button>
+    <button class="boton" onclick="copiarTexto('¡Felicidades, te pido que me des el cbu, titular y monto para poder transferir el premio, gracias!  🤩 🍀 🥳')">Retiro</button>
+<button class="boton" onclick="copiarTexto('¡Felicidades, Recorda que puede pedir un retiro nuevamente despues de las  24HS, gracias!  🤩 🍀 🥳')">Retiro Realizado</button>
+  </div>
+
+  <!-- COMUNICADO -->
+  <div class="grupo comunicado">
+    <div class="titulo-seccion">BILLETERA ROMERO</div>
+    <button class="boton" onclick="copiarTexto('diego.305.alago.mp\nDiego Maximiliano Romero - MP')">ALIAS Romero</button>
+    <button class="boton" onclick="copiarTexto('0000003100078318024667\nDiego Maximiliano Romero - MP')">CVU Romero</button>
+  </div>
+
+  <!-- FORMATO -->
+  <div class="grupo formato">
+    <div class="titulo-seccion">BILLETERA BRASS</div>
+    <button class="boton" onclick="copiarTexto('jorge.360.escudo.mp\njorge danilo brass - Mercado Pago')">ALIAS BRASS</button>
+    <button class="boton" onclick="copiarTexto('0000003100004775311365\njorge danilo brass - Mercado Pago')">CVU BRASS</button>
+  </div>
+
+  <!-- RELACIONADO -->
+  <div class="grupo relacionado">
+    <div class="titulo-seccion">BILLETERA GALLETI</div>
+    <button class="boton" onclick="copiarTexto('galleti01mp\nleandro horacio galletti - Mercado Pago')">ALIAS GALLETI</button>
+    <button class="boton" onclick="copiarTexto('0000003100000124958722\nleandro horacio galletti - Mercado Pago')">Titular GALLETI</button>
+  </div>
+
+  <div class="mensaje" id="mensaje"></div>
+
+  <script>
+    function copiarTexto(texto) {
+      navigator.clipboard.writeText(texto).then(function () {
+        document.getElementById('mensaje').textContent = '✅ Copiado: ' + texto;
+        setTimeout(() => {
+          document.getElementById('mensaje').textContent = '';
+        }, 2000);
+      }, function (err) {
+        alert('❌ Error al copiar el texto: ', err);
+      });
+    }
+  </script>
+</body>
+</html>
