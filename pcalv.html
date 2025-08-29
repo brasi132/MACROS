@@ -1,1 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Copiar textos con bloques de color</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      padding: 30px;
+    }
+
+    .grupo {
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+    }
+
+    .utilidad { background-color: #e67e22; }
+    .comunicado { background-color: #16a085; }
+    .formato { background-color: #3498db; }
+    .relacionado { background-color: #9b59b6; }
+    .media { background-color: #2ecc71; }
+.reinvinculacion { background-color: #ff6b81; }
+
+    .titulo-seccion {
+      font-size: 20px;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .boton {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      font-size: 15px;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.1);
+      border: 2px solid white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .boton:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+    .mensaje {
+      text-align: center;
+      color: green;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 95%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .boton { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- UTILIDAD -->
+  <div class="grupo utilidad">
+    <div class="titulo-seccion">UTILIDAD</div>
+    <button class="boton" onclick="copiarTexto('👋 ¡Bienvenido a la mejor experiencia de entretenimiento! 🥳\n✨ SOMOS 300VIP ✨ \nDisfrutá de una PL4TAF0RMA confiable con +2000 jueg0s 0nline 🎮 \n📍 C4RG4 MÍNIMA: $2000 \n📍 RET1R0 MÍNIMO: $5000 \n🕐 Atención personalizada las 24hs.')">Info</button>
+<button class="boton" onclick="copiarTexto('m04.bet300vip.com')">LINK</button>
+    <button class="boton" onclick="copiarTexto('Listo saldo cargado!\nimportante\nen caso de no llegar a los dos tildes, podes encontrar nuestro actual numero en la plataforma o usar el chat\nm04.bet300vip.com')">Cargado</button>
+    <button class="boton" onclick="copiarTexto('¡Felicidades, te pido que me des el cbu, titular y monto para poder transferir el premio, gracias!  🤩 🍀 🥳')">Retiro</button>
+    <button class="boton" onclick="copiarTexto('¡Felicidades, Recorda que puede pedir un retiro nuevamente despues de las  24HS, gracias!  🤩 🍀 🥳')">Retiro Realizado</button>
+  </div>
+
+  <!-- COMUNICADO -->
+  <div class="grupo comunicado">
+    <div class="titulo-seccion">BILLETERA ALFARO</div>
+    <button class="boton" onclick="copiarTexto('ALFARO4MP\nAgustina Marlene Alfaro - Mercado Pago')">ALIAS ALFARO</button>
+    <button class="boton" onclick="copiarTexto('0000003100035939768321\nAgustina Marlene Alfaro - Mercado Pago')">CVU ALFARO</button>
+  </div>
+
+  <!-- FORMATO -->
+  <div class="grupo formato">
+    <div class="titulo-seccion">BILLETERA GONZALEZ</div>
+    <button class="boton" onclick="copiarTexto('gonzalez04mp\nLuis Alejandro Gonzalez - Mercado Pago')">ALIAS GONZALEZ</button>
+    <button class="boton" onclick="copiarTexto('0000003100068802580481\nLuis Alejandro Gonzalez - Mercado Pago')">CVU GONZALEZ</button>
+  </div>
+
+  <!-- RELACIONADO -->
+  <div class="grupo relacionado">
+    <div class="titulo-seccion">BILLETERA PONCE</div>
+    <button class="boton" onclick="copiarTexto('ponce4mp\nHoracio Rene Ponce - MP')">ALIAS PONCE</button>
+    <button class="boton" onclick="copiarTexto('0000003100088876881923\nHoracio Rene Ponce - MP')">CVU PONCE</button>
+  </div>
+
+
+
+  <!-- CREAR USUARIO -->
+  <div class="grupo reinvinculacion">
+    <div class="titulo-seccion">CREAR USUARIO</div>
+    <input type="text" id="nuevoUsuario" placeholder="Escribe un nombre de usuario...">
+    <button class="boton" onclick="crearUsuario()">Generar Usuario</button>
+  </div>
+
+  <!-- REINVITACIÓN -->
+  <div class="grupo media">
+    <div class="titulo-seccion">REINVITACIÓN</div>
+    <input type="text" id="usuario" placeholder="Escribe un nombre de usuario...">
+    <button class="boton" onclick="generarMensaje()">Generar y Copiar</button>
+  </div>
+
+  <div class="mensaje" id="mensaje"></div>
+
+  <script>
+    function copiarTexto(texto) {
+      navigator.clipboard.writeText(texto).then(function () {
+        document.getElementById('mensaje').textContent = '✅ Copiado: ' + texto;
+        setTimeout(() => {
+          document.getElementById('mensaje').textContent = '';
+        }, 2000);
+      }, function (err) {
+        alert('❌ Error al copiar el texto: ', err);
+      });
+    }
+
+    // CREAR USUARIO
+    function crearUsuario() {
+      const usuario = document.getElementById("nuevoUsuario").value.trim();
+      if (!usuario) {
+        alert("⚠️ Por favor, escribe un nombre de usuario.");
+        return;
+      }
+      const mensaje = "Usuario: " + usuario + "\nContraseña: 12345a\nm04.bet300vip.com";
+      copiarTexto(mensaje);
+    }
+
+    // REINVITACIÓN
+    function generarMensaje() {
+      const usuario = document.getElementById("usuario").value.trim();
+      if (!usuario) {
+        alert("⚠️ Por favor, escribe un nombre de usuario.");
+        return;
+      }
+
+      const linkWhatsApp = "https://wa.me/5491176088519";
+      const variaciones = [
+        "🎉 Volvé a jugar con nosotros " + usuario + " 🤩 Te estamos esperando 🍀 👉 " + linkWhatsApp,
+        "🔥 " + usuario + " regresá ya 👉 Te esperan premios increíbles 🎁 " + linkWhatsApp,
+        "🥳 Hola " + usuario + " 💎 La diversión continúa, entrá ahora 🚀 " + linkWhatsApp,
+        "🎮 " + usuario + " tus fichas te esperan ⚡ No te pierdas la acción 💥 " + linkWhatsApp,
+        "🍀 " + usuario + " hoy puede ser tu día de suerte ✨ Vení a jugar 🎉 " + linkWhatsApp,
+        "🚀 " + usuario + " la aventura continúa, volvé a girar 🎡 " + linkWhatsApp,
+        "🎰 " + usuario + " las máquinas están listas para vos 🔥 " + linkWhatsApp,
+        "💎 " + usuario + " no dejes pasar tu próxima oportunidad 🎉 " + linkWhatsApp,
+        "🎯 " + usuario + " el jackpot te espera, no faltes 💥 " + linkWhatsApp,
+        "🎉 " + usuario + " la suerte llama a tu puerta 🚪 Vení ya 🍀 " + linkWhatsApp,
+        // ... (agregá el resto hasta 40, mismos estilos que antes cambiando frases)
+      ];
+
+      const randomIndex = Math.floor(Math.random() * variaciones.length);
+      const mensaje = variaciones[randomIndex];
+      copiarTexto(mensaje);
+    }
+  </script>
+</body>
+</html>
+
 
