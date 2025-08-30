@@ -6,7 +6,7 @@
   <style>
     body { font-family: Arial, sans-serif; background: #2c3e50; color: white; padding: 20px; }
     h1 { margin-bottom: 20px; }
-    input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; }
+    select, input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; }
     button { background: #3498db; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
     button:hover { background: #2980b9; }
   </style>
@@ -14,16 +14,27 @@
 <body>
   <h1>Panel de Administración</h1>
 
+  <label>Seleccionar PC:</label>
+  <select id="pcSelect" onchange="cargarPC()">
+    <option value="pc1">PC1</option>
+    <option value="pc2">PC2</option>
+    <option value="pc3">PC3</option>
+    <option value="pc4">PC4</option>
+    <option value="pc5">PC5</option>
+    <option value="pcalv">PCALV</option>
+    <option value="pcboy">PCBOY</option>
+  </select>
+
   <label>WhatsApp:</label>
   <input type="text" id="whatsapp" placeholder="Ej: 5491169722387">
 
-  <label>Configuración (JSON):</label>
+  <label>Configuración (JSON solo de esta PC):</label>
   <textarea id="json" rows="20"></textarea>
 
   <button onclick="guardar()">Guardar Configuración</button>
 
   <script>
-    // Configuración inicial por defecto (si nunca se guardó)
+    // Configuración inicial vacía
     const configDefault = {
       "whatsapp": "5491169722387",
       "macros": [
@@ -34,40 +45,60 @@
             { "texto": "Info", "mensaje": "👋 ¡Bienvenido a la mejor experiencia!" },
             { "texto": "Link", "mensaje": "m01.bet300vip.com" }
           ]
-        },
-        {
-          "titulo": "BILLETERA ROMERO",
-          "color": "#16a085",
-          "botones": [
-            { "texto": "Alias Romero", "mensaje": "diego.305.alago.mp" },
-            { "texto": "CVU Romero", "mensaje": "0000003100078318024667" }
-          ]
         }
       ]
     };
 
-    function cargar() {
+    function cargarTodo() {
       let data = localStorage.getItem("config");
       if (!data) {
-        data = JSON.stringify(configDefault, null, 2);
-        localStorage.setItem("config", data);
+        // Si nunca se guardó nada, inicializamos con cada PC = configDefault
+        const inicial = {
+          "pc1": configDefault,
+          "pc2": configDefault,
+          "pc3": configDefault,
+          "pc4": configDefault,
+          "pc5": configDefault,
+          "pcalv": configDefault,
+          "pcboy": configDefault
+        };
+        localStorage.setItem("config", JSON.stringify(inicial, null, 2));
+        data = localStorage.getItem("config");
       }
-      document.getElementById("json").value = data;
-      document.getElementById("whatsapp").value = JSON.parse(data).whatsapp;
+      return JSON.parse(data);
+    }
+
+    function cargarPC() {
+      const pc = document.getElementById("pcSelect").value;
+      const data = cargarTodo();
+
+      if (data[pc]) {
+        document.getElementById("whatsapp").value = data[pc].whatsapp;
+        document.getElementById("json").value = JSON.stringify(data[pc], null, 2);
+      } else {
+        document.getElementById("whatsapp").value = configDefault.whatsapp;
+        document.getElementById("json").value = JSON.stringify(configDefault, null, 2);
+      }
     }
 
     function guardar() {
+      const pc = document.getElementById("pcSelect").value;
+      const todo = cargarTodo();
+
       try {
         let data = JSON.parse(document.getElementById("json").value);
         data.whatsapp = document.getElementById("whatsapp").value;
-        localStorage.setItem("config", JSON.stringify(data));
-        alert("✅ Configuración guardada correctamente");
+        todo[pc] = data;
+
+        localStorage.setItem("config", JSON.stringify(todo, null, 2));
+        alert("✅ Configuración guardada para " + pc);
       } catch (e) {
         alert("❌ Error en el formato JSON");
       }
     }
 
-    cargar();
+    // Cargar la PC seleccionada al abrir
+    cargarPC();
   </script>
 </body>
 </html>
