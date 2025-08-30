@@ -6,7 +6,7 @@
 <style>
 body { font-family: Arial, sans-serif; padding: 20px; background: #f8f8f8; }
 h1 { text-align: center; }
-select, input, button, textarea { margin: 5px; padding: 8px; border-radius: 5px; }
+select, input, button { margin: 5px; padding: 8px; border-radius: 5px; }
 .pc-select { display: block; margin: 10px auto; }
 .grupo { border: 2px solid #ccc; padding: 15px; margin: 15px 0; border-radius: 8px; background: #fff; }
 .titulo-grupo { font-weight: bold; margin-bottom: 10px; }
@@ -16,12 +16,11 @@ select, input, button, textarea { margin: 5px; padding: 8px; border-radius: 5px;
 .color-paleta { display: flex; flex-wrap: wrap; margin: 10px 0; }
 .color-cuadro { width: 30px; height: 30px; margin: 3px; border-radius: 5px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 2px rgba(0,0,0,0.5); }
 .color-cuadro:hover { transform: scale(1.1); }
-.section { border:2px dashed #ccc; padding:10px; margin:10px 0; border-radius:5px; background:#fafafa; }
 </style>
 </head>
 <body>
 
-<h1>Panel Admin Completo</h1>
+<h1>Panel Admin</h1>
 
 <label for="pc">Seleccionar PC:</label>
 <select id="pc" class="pc-select" onchange="mostrarConfig()">
@@ -33,26 +32,18 @@ select, input, button, textarea { margin: 5px; padding: 8px; border-radius: 5px;
   <option value="pcalv">PCALV</option>
 </select>
 
+<!-- Input para WhatsApp -->
+<div class="grupo">
+  <div class="titulo-grupo">Número de WhatsApp</div>
+  <input type="text" id="inputWhatsApp" placeholder="Escribe el número con código país">
+  <button class="btn-add" onclick="guardarWhatsApp()">Guardar WhatsApp</button>
+</div>
+
 <div id="contenedor"></div>
 <button class="btn-add" onclick="abrirCrearGrupo()">➕ Agregar Grupo</button>
 
-<!-- CREAR USUARIO -->
-<div class="section">
-  <h3>CREAR USUARIO</h3>
-  <input type="text" id="nuevoUsuario" placeholder="Nombre de usuario...">
-  <button class="btn-add" onclick="guardarNuevoUsuario()">Guardar Usuario</button>
-</div>
-
-<!-- REINVITACIÓN -->
-<div class="section">
-  <h3>REINVITACIÓN / REVINCULACIÓN</h3>
-  <input type="text" id="usuarioReinv" placeholder="Nombre de usuario...">
-  <textarea id="mensajeReinv" placeholder="Mensaje a enviar con \n para saltos de línea..." rows="3" style="width:100%;"></textarea>
-  <button class="btn-add" onclick="guardarReinvitacion()">Guardar Reinvitación</button>
-</div>
-
 <!-- Modal para crear/editar grupo -->
-<div id="modalGrupo" style="display:none; padding:20px; background:#fff; border:2px solid #ccc; border-radius:10px; position:fixed; top:20%; left:50%; transform:translateX(-50%);">
+<div id="modalGrupo" style="display:none; padding:20px; background:#fff; border:2px solid #ccc; border-radius:10px; position:fixed; top:20%; left:50%; transform:translateX(-50%); z-index:1000;">
   <h3 id="modalTitulo">Crear Grupo</h3>
   <input type="text" id="nombreGrupo" placeholder="Nombre del grupo">
   <div class="color-paleta" id="paleta"></div>
@@ -72,15 +63,30 @@ function guardarConfig(data) {
   localStorage.setItem("config", JSON.stringify(data));
 }
 
-// MOSTRAR CONFIGURACIÓN
+// Guardar número de WhatsApp
+function guardarWhatsApp() {
+  const pc = document.getElementById("pc").value;
+  const numero = document.getElementById("inputWhatsApp").value.trim();
+  if(!numero) { alert("Escribe un número válido"); return; }
+  let config = obtenerConfig();
+  if(!config[pc]) config[pc] = { macros: [], whatsapp: numero };
+  else config[pc].whatsapp = numero;
+  guardarConfig(config);
+  alert("✅ Número de WhatsApp guardado para " + pc);
+}
+
 function mostrarConfig() {
   const pc = document.getElementById("pc").value;
   const data = obtenerConfig();
-  const config = data[pc] || { macros: [], usuarios: [], reinvitaciones: [] };
+
+  // Mostrar número de WhatsApp actual
+  const inputWA = document.getElementById("inputWhatsApp");
+  if(inputWA) inputWA.value = data[pc]?.whatsapp || '';
+
+  const config = data[pc] || { macros: [] };
   const cont = document.getElementById("contenedor");
   cont.innerHTML = "";
 
-  // Grupos/Macros
   config.macros.forEach((grupo, gi) => {
     const div = document.createElement("div");
     div.className = "grupo";
@@ -91,31 +97,35 @@ function mostrarConfig() {
     titulo.textContent = grupo.titulo + " (" + grupo.color + ")";
     div.appendChild(titulo);
 
+    // Botones
     grupo.botones.forEach((b, bi) => {
       const item = document.createElement("div");
       item.className = "boton-item";
       item.innerHTML = `<span>${b.texto} → ${b.mensaje}</span>`;
 
-      // Botón eliminar
       const btnDel = document.createElement("button");
       btnDel.textContent = "🗑️";
       btnDel.className = "btn-del";
-      btnDel.onclick = () => { grupo.botones.splice(bi,1); data[pc] = config; guardarConfig(data); mostrarConfig(); };
+      btnDel.onclick = () => {
+        grupo.botones.splice(bi,1);
+        data[pc] = config;
+        guardarConfig(data);
+        mostrarConfig();
+      };
       item.appendChild(btnDel);
 
-      // Botón editar
       const btnEdit = document.createElement("button");
       btnEdit.textContent = "✏️ Editar";
       btnEdit.className = "btn-add";
       btnEdit.onclick = () => {
         const nuevoTexto = prompt("Nuevo texto del botón:", b.texto);
-        if(nuevoTexto === null) return;
-
+        if(nuevoTexto===null) return;
         const nuevoMensaje = prompt("Nuevo mensaje a copiar (usa \\n para saltos de línea):", b.mensaje);
-        if(nuevoMensaje === null) return;
-
+        if(nuevoMensaje===null) return;
         grupo.botones[bi] = { texto: nuevoTexto, mensaje: nuevoMensaje.replace(/\\n/g,"\n") };
-        data[pc] = config; guardarConfig(data); mostrarConfig();
+        data[pc] = config;
+        guardarConfig(data);
+        mostrarConfig();
       };
       item.appendChild(btnEdit);
 
@@ -131,18 +141,23 @@ function mostrarConfig() {
       const mensaje = prompt("Mensaje a copiar (usa \\n para saltos de línea):");
       if(!mensaje) return;
       grupo.botones.push({texto, mensaje: mensaje.replace(/\\n/g,"\n")});
-      data[pc] = config; guardarConfig(data); mostrarConfig();
+      data[pc] = config;
+      guardarConfig(data);
+      mostrarConfig();
     };
     div.appendChild(btnAdd);
 
-    // Botón eliminar grupo
     const btnDelGrupo = document.createElement("button");
     btnDelGrupo.textContent = "🗑️ Eliminar Grupo";
     btnDelGrupo.className = "btn-del";
-    btnDelGrupo.onclick = () => { config.macros.splice(gi,1); data[pc]=config; guardarConfig(data); mostrarConfig(); };
+    btnDelGrupo.onclick = () => {
+      config.macros.splice(gi,1);
+      data[pc] = config;
+      guardarConfig(data);
+      mostrarConfig();
+    };
     div.appendChild(btnDelGrupo);
 
-    // Cambiar color
     const btnColor = document.createElement("button");
     btnColor.textContent = "🎨 Cambiar Color";
     btnColor.className = "btn-add";
@@ -151,46 +166,54 @@ function mostrarConfig() {
 
     cont.appendChild(div);
   });
-
-  // CREAR USUARIOS
-  document.getElementById("nuevoUsuario").value = "";
-  // REINVITACIONES
-  document.getElementById("usuarioReinv").value = "";
-  document.getElementById("mensajeReinv").value = "";
 }
 
-// Modal y funciones de grupos
-function abrirCrearGrupo() { grupoEditando=null; document.getElementById("modalTitulo").textContent="Crear Grupo"; document.getElementById("nombreGrupo").value=""; mostrarPaleta(); document.getElementById("modalGrupo").style.display="block"; }
-function abrirCambiarColor(indice) { grupoEditando=indice; document.getElementById("modalTitulo").textContent="Cambiar Color del Grupo"; mostrarPaleta(); document.getElementById("modalGrupo").style.display="block"; }
-function mostrarPaleta() { const paletaDiv=document.getElementById("paleta"); paletaDiv.innerHTML=""; colores.forEach(c=>{ const d=document.createElement("div"); d.className="color-cuadro"; d.style.background=c; d.onclick=()=>colorSeleccionado=c; paletaDiv.appendChild(d); }); }
-function cerrarModal(){ document.getElementById("modalGrupo").style.display="none"; }
-function guardarGrupo(){ const pc=document.getElementById("pc").value; const data=obtenerConfig(); if(!data[pc])data[pc]={macros:[],usuarios:[],reinvitaciones:[]}; if(grupoEditando===null){ const nombre=document.getElementById("nombreGrupo").value.trim(); if(!nombre){alert("Escribe un nombre");return;} data[pc].macros.push({titulo:nombre,color:colorSeleccionado,botones:[]}); } else{ data[pc].macros[grupoEditando].color=colorSeleccionado; } guardarConfig(data); mostrarConfig(); cerrarModal(); }
-
-// CREAR USUARIO
-function guardarNuevoUsuario(){
-  const pc=document.getElementById("pc").value;
-  const nombre=document.getElementById("nuevoUsuario").value.trim();
-  if(!nombre){ alert("Escribe un usuario"); return; }
-  const data=obtenerConfig();
-  if(!data[pc]) data[pc]={macros:[],usuarios:[],reinvaciones:[]};
-  data[pc].usuarios.push({usuario:nombre, clave:"12345a"});
-  guardarConfig(data);
-  mostrarConfig();
-  alert("Usuario creado: "+nombre+" / clave: 12345a");
+// Modal crear/editar grupo
+function abrirCrearGrupo() {
+  grupoEditando = null;
+  document.getElementById("modalTitulo").textContent = "Crear Grupo";
+  document.getElementById("nombreGrupo").value = "";
+  mostrarPaleta();
+  document.getElementById("modalGrupo").style.display = "block";
+}
+function abrirCambiarColor(indice) {
+  grupoEditando = indice;
+  document.getElementById("modalTitulo").textContent = "Cambiar Color del Grupo";
+  document.getElementById("nombreGrupo").value = "";
+  mostrarPaleta();
+  document.getElementById("modalGrupo").style.display = "block";
 }
 
-// REINVITACIÓN / REVINCULACIÓN
-function guardarReinvitacion(){
-  const pc=document.getElementById("pc").value;
-  const usuario=document.getElementById("usuarioReinv").value.trim();
-  const mensaje=document.getElementById("mensajeReinv").value.trim();
-  if(!usuario || !mensaje){ alert("Completa ambos campos"); return; }
-  const data=obtenerConfig();
-  if(!data[pc]) data[pc]={macros:[],usuarios:[],reinvaciones:[]};
-  data[pc].reinvitaciones.push({usuario,mensaje:mensaje.replace(/\\n/g,"\n")});
+function mostrarPaleta() {
+  const paletaDiv = document.getElementById("paleta");
+  paletaDiv.innerHTML = "";
+  colores.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "color-cuadro";
+    div.style.background = c;
+    div.onclick = () => colorSeleccionado = c;
+    paletaDiv.appendChild(div);
+  });
+}
+
+function cerrarModal() {
+  document.getElementById("modalGrupo").style.display = "none";
+}
+
+function guardarGrupo() {
+  const pc = document.getElementById("pc").value;
+  const data = obtenerConfig();
+  if(!data[pc]) data[pc] = { macros: [] };
+  if(grupoEditando===null){
+    const nombre = document.getElementById("nombreGrupo").value.trim();
+    if(!nombre) { alert("Escribe un nombre"); return; }
+    data[pc].macros.push({ titulo: nombre, color: colorSeleccionado, botones: [] });
+  } else {
+    data[pc].macros[grupoEditando].color = colorSeleccionado;
+  }
   guardarConfig(data);
   mostrarConfig();
-  alert("Reinvitación guardada para "+usuario);
+  cerrarModal();
 }
 
 mostrarConfig();
