@@ -2,103 +2,125 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel de Administración</title>
+  <title>Panel Admin</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #2c3e50; color: white; padding: 20px; }
-    h1 { margin-bottom: 20px; }
-    select, input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; }
-    button { background: #3498db; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
-    button:hover { background: #2980b9; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f8f8f8; }
+    h1 { text-align: center; }
+    .pc-select { margin: 10px auto; display: block; padding: 10px; }
+    .grupo { border: 2px solid #ccc; padding: 15px; margin: 15px 0; border-radius: 8px; background: #fff; }
+    .titulo-grupo { font-weight: bold; margin-bottom: 10px; }
+    .boton-item { background: #eee; margin: 5px 0; padding: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
+    button { margin: 3px; padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; }
+    .btn-add { background: #4CAF50; color: white; }
+    .btn-del { background: #f44336; color: white; }
   </style>
 </head>
 <body>
-  <h1>Panel de Administración</h1>
+  <h1>Panel Admin</h1>
 
-  <label>Seleccionar PC:</label>
-  <select id="pcSelect" onchange="cargarPC()">
+  <label for="pc">Seleccionar PC:</label>
+  <select id="pc" class="pc-select" onchange="mostrarConfig()">
     <option value="pc1">PC1</option>
     <option value="pc2">PC2</option>
     <option value="pc3">PC3</option>
     <option value="pc4">PC4</option>
     <option value="pc5">PC5</option>
     <option value="pcalv">PCALV</option>
-    <option value="pcboy">PCBOY</option>
   </select>
 
-  <label>WhatsApp:</label>
-  <input type="text" id="whatsapp" placeholder="Ej: 5491169722387">
-
-  <label>Configuración (JSON solo de esta PC):</label>
-  <textarea id="json" rows="20"></textarea>
-
-  <button onclick="guardar()">Guardar Configuración</button>
+  <div id="contenedor"></div>
+  <button class="btn-add" onclick="agregarGrupo()">➕ Agregar Grupo</button>
 
   <script>
-    // Configuración inicial vacía
-    const configDefault = {
-      "whatsapp": "5491169722387",
-      "macros": [
-        {
-          "titulo": "UTILIDAD",
-          "color": "#e67e22",
-          "botones": [
-            { "texto": "Info", "mensaje": "👋 ¡Bienvenido a la mejor experiencia!" },
-            { "texto": "Link", "mensaje": "m01.bet300vip.com" }
-          ]
-        }
-      ]
-    };
+    // Datos guardados
+    function obtenerConfig() {
+      return JSON.parse(localStorage.getItem("config")) || {};
+    }
 
-    function cargarTodo() {
-      let data = localStorage.getItem("config");
-      if (!data) {
-        // Si nunca se guardó nada, inicializamos con cada PC = configDefault
-        const inicial = {
-          "pc1": configDefault,
-          "pc2": configDefault,
-          "pc3": configDefault,
-          "pc4": configDefault,
-          "pc5": configDefault,
-          "pcalv": configDefault,
-          "pcboy": configDefault
+    function guardarConfig(data) {
+      localStorage.setItem("config", JSON.stringify(data));
+    }
+
+    function mostrarConfig() {
+      const pc = document.getElementById("pc").value;
+      const data = obtenerConfig();
+      const config = data[pc] || { macros: [] };
+      const cont = document.getElementById("contenedor");
+      cont.innerHTML = "";
+
+      config.macros.forEach((grupo, gi) => {
+        const div = document.createElement("div");
+        div.className = "grupo";
+
+        const titulo = document.createElement("div");
+        titulo.className = "titulo-grupo";
+        titulo.textContent = grupo.titulo + " (" + grupo.color + ")";
+        div.appendChild(titulo);
+
+        // Botones dentro del grupo
+        grupo.botones.forEach((b, bi) => {
+          const item = document.createElement("div");
+          item.className = "boton-item";
+          item.innerHTML = `<span>${b.texto} → ${b.mensaje}</span>`;
+          const btnDel = document.createElement("button");
+          btnDel.textContent = "🗑️";
+          btnDel.className = "btn-del";
+          btnDel.onclick = () => {
+            grupo.botones.splice(bi, 1);
+            data[pc] = config;
+            guardarConfig(data);
+            mostrarConfig();
+          };
+          item.appendChild(btnDel);
+          div.appendChild(item);
+        });
+
+        // Botón para agregar nuevo botón en este grupo
+        const btnAdd = document.createElement("button");
+        btnAdd.textContent = "➕ Agregar Botón";
+        btnAdd.className = "btn-add";
+        btnAdd.onclick = () => {
+          const texto = prompt("Texto del botón:");
+          if (!texto) return;
+          const mensaje = prompt("Mensaje a copiar:");
+          if (!mensaje) return;
+          grupo.botones.push({ texto, mensaje });
+          data[pc] = config;
+          guardarConfig(data);
+          mostrarConfig();
         };
-        localStorage.setItem("config", JSON.stringify(inicial, null, 2));
-        data = localStorage.getItem("config");
-      }
-      return JSON.parse(data);
+        div.appendChild(btnAdd);
+
+        // Botón para eliminar todo el grupo
+        const btnDelGrupo = document.createElement("button");
+        btnDelGrupo.textContent = "🗑️ Eliminar Grupo";
+        btnDelGrupo.className = "btn-del";
+        btnDelGrupo.onclick = () => {
+          config.macros.splice(gi, 1);
+          data[pc] = config;
+          guardarConfig(data);
+          mostrarConfig();
+        };
+        div.appendChild(btnDelGrupo);
+
+        cont.appendChild(div);
+      });
     }
 
-    function cargarPC() {
-      const pc = document.getElementById("pcSelect").value;
-      const data = cargarTodo();
-
-      if (data[pc]) {
-        document.getElementById("whatsapp").value = data[pc].whatsapp;
-        document.getElementById("json").value = JSON.stringify(data[pc], null, 2);
-      } else {
-        document.getElementById("whatsapp").value = configDefault.whatsapp;
-        document.getElementById("json").value = JSON.stringify(configDefault, null, 2);
-      }
+    function agregarGrupo() {
+      const pc = document.getElementById("pc").value;
+      const data = obtenerConfig();
+      if (!data[pc]) data[pc] = { macros: [] };
+      const titulo = prompt("Título del grupo:");
+      if (!titulo) return;
+      const color = prompt("Color en HEX (ej: #2196F3):", "#2196F3");
+      data[pc].macros.push({ titulo, color, botones: [] });
+      guardarConfig(data);
+      mostrarConfig();
     }
 
-    function guardar() {
-      const pc = document.getElementById("pcSelect").value;
-      const todo = cargarTodo();
-
-      try {
-        let data = JSON.parse(document.getElementById("json").value);
-        data.whatsapp = document.getElementById("whatsapp").value;
-        todo[pc] = data;
-
-        localStorage.setItem("config", JSON.stringify(todo, null, 2));
-        alert("✅ Configuración guardada para " + pc);
-      } catch (e) {
-        alert("❌ Error en el formato JSON");
-      }
-    }
-
-    // Cargar la PC seleccionada al abrir
-    cargarPC();
+    // Mostrar al cargar
+    mostrarConfig();
   </script>
 </body>
 </html>
