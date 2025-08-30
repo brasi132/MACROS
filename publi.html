@@ -44,9 +44,7 @@
           btn.className = "boton";
           btn.textContent = b.texto;
           btn.onclick = () => {
-            navigator.clipboard.writeText(b.mensaje).then(() => {
-              alert("Copiado: " + b.mensaje);
-            });
+            navigator.clipboard.writeText(b.mensaje);
           };
           div.appendChild(btn);
         });
