@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>PC1</title>
+  <title>PC2</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f3f3f3; padding: 20px; }
     h1 { text-align: center; }
@@ -14,11 +14,13 @@
   </style>
 </head>
 <body>
-  <h1>Macros PC1</h1>
+  <h1>Macros PC2</h1>
   <div id="contenedor"></div>
   <div class="mensaje" id="mensaje"></div>
 
   <script>
+    const PC_ID = "pc2"; // 🔹 Este archivo es PC2
+
     function copiarTexto(texto) {
       navigator.clipboard.writeText(texto).then(() => {
         document.getElementById("mensaje").textContent = "✅ Copiado: " + texto;
@@ -27,12 +29,13 @@
     }
 
     function cargarMacros() {
-      const data = JSON.parse(localStorage.getItem("config"));
-      if (!data) {
-        document.getElementById("contenedor").innerHTML = "<p>❌ No hay configuración guardada.</p>";
+      const todo = JSON.parse(localStorage.getItem("config"));
+      if (!todo || !todo[PC_ID]) {
+        document.getElementById("contenedor").innerHTML = "<p>❌ No hay configuración para " + PC_ID + ".</p>";
         return;
       }
 
+      const data = todo[PC_ID];
       const contenedor = document.getElementById("contenedor");
       contenedor.innerHTML = "";
 
