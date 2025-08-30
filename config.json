@@ -1,0 +1,21 @@
+{
+  "whatsapp": "5491169722387",
+  "macros": [
+    {
+      "titulo": "UTILIDAD",
+      "color": "#e67e22",
+      "botones": [
+        { "texto": "Info", "mensaje": "👋 ¡Bienvenido a la mejor experiencia!" },
+        { "texto": "Link", "mensaje": "m01.bet300vip.com" }
+      ]
+    },
+    {
+      "titulo": "BILLETERA ROMERO",
+      "color": "#16a085",
+      "botones": [
+        { "texto": "Alias Romero", "mensaje": "diego.305.alago.mp" },
+        { "texto": "CVU Romero", "mensaje": "0000003100078318024667" }
+      ]
+    }
+  ]
+}
