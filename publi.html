@@ -4,13 +4,11 @@
 <meta charset="UTF-8">
 <title>PC1</title>
 <style>
-  body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
-  h1 { text-align: center; }
-  .grupo { border-radius: 12px; padding: 20px; margin: 20px 0; color: white; }
-  .titulo-grupo { text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 15px; }
-  .boton { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 2px solid white; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; background: rgba(255,255,255,0.2); color: white; }
-  input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
-  .mensaje { text-align: center; color: green; font-weight: bold; margin-top: 10px; }
+body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+h1 { text-align: center; }
+.grupo { border-radius: 12px; padding: 20px; margin: 20px 0; color: white; }
+.titulo-grupo { text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 15px; }
+.boton { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 2px solid white; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; background: rgba(255,255,255,0.2); color: white; }
 </style>
 </head>
 <body>
@@ -20,21 +18,17 @@
 <script>
 const PC_ID = "pc1";
 
-// Funciones para macros
-function obtenerConfig() { return JSON.parse(localStorage.getItem("config")) || {}; }
-
-function obtenerWhatsApp() {
-  const data = obtenerConfig();
-  return data[PC_ID]?.whatsapp || '5491169722387';
+function obtenerConfig() {
+  return JSON.parse(localStorage.getItem("config")) || {};
 }
 
 function mostrarConfig() {
   const data = obtenerConfig();
-  const config = data[PC_ID] || { macros: [] };
+  const config = data[PC_ID] || { macros: [] , whatsapp:'', link:''};
   const cont = document.getElementById("contenedor");
   cont.innerHTML = "";
 
-  // Mostrar macros
+  // Por cada grupo
   config.macros.forEach(grupo => {
     const div = document.createElement("div");
     div.className = "grupo";
@@ -56,80 +50,64 @@ function mostrarConfig() {
     cont.appendChild(div);
   });
 
-  // --- CREAR USUARIO ---
-  const divUsuario = document.createElement("div");
-  divUsuario.className = "grupo";
-  divUsuario.style.background = "#ff6b81";
+  // Sección Crear Usuario
+  const grupoUsuario = document.createElement("div");
+  grupoUsuario.className = "grupo";
+  grupoUsuario.style.background = "#ff6b81"; // color de reinvinculacion/crear usuario
   const tituloUsuario = document.createElement("div");
   tituloUsuario.className = "titulo-grupo";
   tituloUsuario.textContent = "CREAR USUARIO";
-  divUsuario.appendChild(tituloUsuario);
+  grupoUsuario.appendChild(tituloUsuario);
 
-  const inputUsuario = document.createElement("input");
-  inputUsuario.placeholder = "Escribe un nombre de usuario...";
-  inputUsuario.id = "nuevoUsuario";
-  divUsuario.appendChild(inputUsuario);
+  const input = document.createElement("input");
+  input.type = "text";
+  input.id = "nuevoUsuario";
+  input.placeholder = "Escribe un nombre de usuario...";
+  grupoUsuario.appendChild(input);
 
-  const btnUsuario = document.createElement("button");
-  btnUsuario.className = "boton";
-  btnUsuario.textContent = "Generar Usuario";
-  btnUsuario.onclick = () => {
-    const usuario = inputUsuario.value.trim();
-    if(!usuario) return alert("Escribe un nombre de usuario");
-    const mensaje = `Usuario: ${usuario}\nContraseña: 12345a\nm01.bet300vip.com`;
+  const botonGenerar = document.createElement("button");
+  botonGenerar.className = "boton";
+  botonGenerar.textContent = "Generar Usuario";
+  botonGenerar.onclick = () => {
+    const usuario = input.value.trim();
+    if(!usuario){ alert("Escribe un usuario"); return; }
+    const mensaje = "Usuario: " + usuario + "\nContraseña: 12345a\n" + config.link;
     navigator.clipboard.writeText(mensaje);
-    mostrarMensaje("Usuario copiado ✅");
   };
-  divUsuario.appendChild(btnUsuario);
-  cont.appendChild(divUsuario);
+  grupoUsuario.appendChild(botonGenerar);
 
-  // --- REINVITACIÓN ---
-  const divReinv = document.createElement("div");
-  divReinv.className = "grupo";
-  divReinv.style.background = "#2ecc71";
+  cont.appendChild(grupoUsuario);
+
+  // Sección Reinvitar
+  const grupoReinv = document.createElement("div");
+  grupoReinv.className = "grupo";
+  grupoReinv.style.background = "#2ecc71"; // color reinvinculacion
   const tituloReinv = document.createElement("div");
   tituloReinv.className = "titulo-grupo";
-  tituloReinv.textContent = "REINVITACIÓN / REVINCULACIÓN";
-  divReinv.appendChild(tituloReinv);
+  tituloReinv.textContent = "REINVITACIÓN";
+  grupoReinv.appendChild(tituloReinv);
 
   const inputReinv = document.createElement("input");
+  inputReinv.type = "text";
+  inputReinv.id = "usuarioReinv";
   inputReinv.placeholder = "Escribe un nombre de usuario...";
-  inputReinv.id = "usuario";
-  divReinv.appendChild(inputReinv);
+  grupoReinv.appendChild(inputReinv);
 
-  const btnReinv = document.createElement("button");
-  btnReinv.className = "boton";
-  btnReinv.textContent = "Generar y Copiar";
-  btnReinv.onclick = () => {
+  const botonReinv = document.createElement("button");
+  botonReinv.className = "boton";
+  botonReinv.textContent = "Generar Mensaje";
+  botonReinv.onclick = () => {
     const usuario = inputReinv.value.trim();
-    if(!usuario) return alert("Escribe un nombre de usuario");
-    const linkWhatsApp = "https://wa.me/" + obtenerWhatsApp();
-    const mensajes = [
-      `🎉 Volvé a jugar con nosotros ${usuario} 🤩\nTe estamos esperando 🍀 👉 ${linkWhatsApp}`,
-      `🔥 ${usuario}, regresá ya 👉\nTe esperan premios increíbles 🎁 ${linkWhatsApp}`,
-      `🥳 Hola ${usuario} 💎\nLa diversión continúa, entrá ahora 🚀 ${linkWhatsApp}`,
-      `🎮 ${usuario}, tus fichas te esperan ⚡\nNo te pierdas la acción 💥 ${linkWhatsApp}`
-    ];
-    const randomIndex = Math.floor(Math.random() * mensajes.length);
-    navigator.clipboard.writeText(mensajes[randomIndex]);
-    mostrarMensaje("Mensaje de reinvitación copiado ✅");
+    if(!usuario){ alert("Escribe un usuario"); return; }
+    const whatsapp = config.whatsapp || '';
+    const mensaje = `🎉 Volvé a jugar con nosotros ${usuario} 🤩 Te estamos esperando 🍀 👉 https://wa.me/${whatsapp}`;
+    navigator.clipboard.writeText(mensaje);
   };
-  divReinv.appendChild(btnReinv);
-  cont.appendChild(divReinv);
+  grupoReinv.appendChild(botonReinv);
+
+  cont.appendChild(grupoReinv);
 }
 
-function mostrarMensaje(txt) {
-  let div = document.querySelector(".mensaje");
-  if(!div) {
-    div = document.createElement("div");
-    div.className = "mensaje";
-    document.body.appendChild(div);
-  }
-  div.textContent = txt;
-  setTimeout(() => div.textContent = "", 2000);
-}
-
-// Mostrar al cargar
 mostrarConfig();
 </script>
 </body>
