@@ -1,126 +1,183 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Panel Admin</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f8f8f8; }
-    h1 { text-align: center; }
-    .pc-select { margin: 10px auto; display: block; padding: 10px; }
-    .grupo { border: 2px solid #ccc; padding: 15px; margin: 15px 0; border-radius: 8px; background: #fff; }
-    .titulo-grupo { font-weight: bold; margin-bottom: 10px; }
-    .boton-item { background: #eee; margin: 5px 0; padding: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
-    button { margin: 3px; padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; }
-    .btn-add { background: #4CAF50; color: white; }
-    .btn-del { background: #f44336; color: white; }
-  </style>
+<meta charset="UTF-8">
+<title>Panel Admin Completo</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; background: #f8f8f8; }
+h1 { text-align: center; }
+select, input, button { margin: 5px; padding: 8px; border-radius: 5px; }
+.pc-select { display: block; margin: 10px auto; }
+.grupo { border: 2px solid #ccc; padding: 15px; margin: 15px 0; border-radius: 8px; background: #fff; }
+.titulo-grupo { font-weight: bold; margin-bottom: 10px; }
+.boton-item { background: #eee; margin: 5px 0; padding: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
+.btn-add { background: #4CAF50; color: white; cursor: pointer; }
+.btn-del { background: #f44336; color: white; cursor: pointer; }
+.color-paleta { display: flex; flex-wrap: wrap; margin: 10px 0; }
+.color-cuadro { width: 30px; height: 30px; margin: 3px; border-radius: 5px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 2px rgba(0,0,0,0.5); }
+.color-cuadro:hover { transform: scale(1.1); }
+</style>
 </head>
 <body>
-  <h1>Panel Admin</h1>
 
-  <label for="pc">Seleccionar PC:</label>
-  <select id="pc" class="pc-select" onchange="mostrarConfig()">
-    <option value="pc1">PC1</option>
-    <option value="pc2">PC2</option>
-    <option value="pc3">PC3</option>
-    <option value="pc4">PC4</option>
-    <option value="pc5">PC5</option>
-    <option value="pcalv">PCALV</option>
-  </select>
+<h1>Panel Admin</h1>
 
-  <div id="contenedor"></div>
-  <button class="btn-add" onclick="agregarGrupo()">➕ Agregar Grupo</button>
+<label for="pc">Seleccionar PC:</label>
+<select id="pc" class="pc-select" onchange="mostrarConfig()">
+  <option value="pc1">PC1</option>
+  <option value="pc2">PC2</option>
+  <option value="pc3">PC3</option>
+  <option value="pc4">PC4</option>
+  <option value="pc5">PC5</option>
+  <option value="pcalv">PCALV</option>
+</select>
 
-  <script>
-    // Datos guardados
-    function obtenerConfig() {
-      return JSON.parse(localStorage.getItem("config")) || {};
-    }
+<div id="contenedor"></div>
+<button class="btn-add" onclick="abrirCrearGrupo()">➕ Agregar Grupo</button>
 
-    function guardarConfig(data) {
-      localStorage.setItem("config", JSON.stringify(data));
-    }
+<!-- Modal para crear/editar grupo -->
+<div id="modalGrupo" style="display:none; padding:20px; background:#fff; border:2px solid #ccc; border-radius:10px; position:fixed; top:20%; left:50%; transform:translateX(-50%);">
+  <h3 id="modalTitulo">Crear Grupo</h3>
+  <input type="text" id="nombreGrupo" placeholder="Nombre del grupo">
+  <div class="color-paleta" id="paleta"></div>
+  <button class="btn-add" onclick="guardarGrupo()">Guardar</button>
+  <button class="btn-del" onclick="cerrarModal()">Cancelar</button>
+</div>
 
-    function mostrarConfig() {
-      const pc = document.getElementById("pc").value;
-      const data = obtenerConfig();
-      const config = data[pc] || { macros: [] };
-      const cont = document.getElementById("contenedor");
-      cont.innerHTML = "";
+<script>
+const colores = ["#4A90E2","#2ECC71","#FF6F61","#9B59B6","#F1C40F","#34495E","#5DADE2","#E67E22","#1ABC9C"];
+let colorSeleccionado = colores[0];
+let grupoEditando = null;
 
-      config.macros.forEach((grupo, gi) => {
-        const div = document.createElement("div");
-        div.className = "grupo";
+function obtenerConfig() {
+  return JSON.parse(localStorage.getItem("config")) || {};
+}
+function guardarConfig(data) {
+  localStorage.setItem("config", JSON.stringify(data));
+}
 
-        const titulo = document.createElement("div");
-        titulo.className = "titulo-grupo";
-        titulo.textContent = grupo.titulo + " (" + grupo.color + ")";
-        div.appendChild(titulo);
+function mostrarConfig() {
+  const pc = document.getElementById("pc").value;
+  const data = obtenerConfig();
+  const config = data[pc] || { macros: [] };
+  const cont = document.getElementById("contenedor");
+  cont.innerHTML = "";
 
-        // Botones dentro del grupo
-        grupo.botones.forEach((b, bi) => {
-          const item = document.createElement("div");
-          item.className = "boton-item";
-          item.innerHTML = `<span>${b.texto} → ${b.mensaje}</span>`;
-          const btnDel = document.createElement("button");
-          btnDel.textContent = "🗑️";
-          btnDel.className = "btn-del";
-          btnDel.onclick = () => {
-            grupo.botones.splice(bi, 1);
-            data[pc] = config;
-            guardarConfig(data);
-            mostrarConfig();
-          };
-          item.appendChild(btnDel);
-          div.appendChild(item);
-        });
+  config.macros.forEach((grupo, gi) => {
+    const div = document.createElement("div");
+    div.className = "grupo";
+    div.style.backgroundColor = grupo.color;
 
-        // Botón para agregar nuevo botón en este grupo
-        const btnAdd = document.createElement("button");
-        btnAdd.textContent = "➕ Agregar Botón";
-        btnAdd.className = "btn-add";
-        btnAdd.onclick = () => {
-          const texto = prompt("Texto del botón:");
-          if (!texto) return;
-          const mensaje = prompt("Mensaje a copiar:");
-          if (!mensaje) return;
-          grupo.botones.push({ texto, mensaje });
-          data[pc] = config;
-          guardarConfig(data);
-          mostrarConfig();
-        };
-        div.appendChild(btnAdd);
+    const titulo = document.createElement("div");
+    titulo.className = "titulo-grupo";
+    titulo.textContent = grupo.titulo + " (" + grupo.color + ")";
+    div.appendChild(titulo);
 
-        // Botón para eliminar todo el grupo
-        const btnDelGrupo = document.createElement("button");
-        btnDelGrupo.textContent = "🗑️ Eliminar Grupo";
-        btnDelGrupo.className = "btn-del";
-        btnDelGrupo.onclick = () => {
-          config.macros.splice(gi, 1);
-          data[pc] = config;
-          guardarConfig(data);
-          mostrarConfig();
-        };
-        div.appendChild(btnDelGrupo);
+    grupo.botones.forEach((b, bi) => {
+      const item = document.createElement("div");
+      item.className = "boton-item";
+      item.innerHTML = `<span>${b.texto} → ${b.mensaje}</span>`;
+      const btnDel = document.createElement("button");
+      btnDel.textContent = "🗑️";
+      btnDel.className = "btn-del";
+      btnDel.onclick = () => {
+        grupo.botones.splice(bi,1);
+        data[pc] = config;
+        guardarConfig(data);
+        mostrarConfig();
+      };
+      item.appendChild(btnDel);
+      div.appendChild(item);
+    });
 
-        cont.appendChild(div);
-      });
-    }
-
-    function agregarGrupo() {
-      const pc = document.getElementById("pc").value;
-      const data = obtenerConfig();
-      if (!data[pc]) data[pc] = { macros: [] };
-      const titulo = prompt("Título del grupo:");
-      if (!titulo) return;
-      const color = prompt("Color en HEX (ej: #2196F3):", "#2196F3");
-      data[pc].macros.push({ titulo, color, botones: [] });
+    const btnAdd = document.createElement("button");
+    btnAdd.textContent = "➕ Agregar Botón";
+    btnAdd.className = "btn-add";
+    btnAdd.onclick = () => {
+      const texto = prompt("Texto del botón:");
+      if(!texto) return;
+      const mensaje = prompt("Mensaje a copiar:");
+      if(!mensaje) return;
+      grupo.botones.push({texto, mensaje});
+      data[pc] = config;
       guardarConfig(data);
       mostrarConfig();
-    }
+    };
+    div.appendChild(btnAdd);
 
-    // Mostrar al cargar
-    mostrarConfig();
-  </script>
+    const btnDelGrupo = document.createElement("button");
+    btnDelGrupo.textContent = "🗑️ Eliminar Grupo";
+    btnDelGrupo.className = "btn-del";
+    btnDelGrupo.onclick = () => {
+      config.macros.splice(gi,1);
+      data[pc] = config;
+      guardarConfig(data);
+      mostrarConfig();
+    };
+    div.appendChild(btnDelGrupo);
+
+    const btnColor = document.createElement("button");
+    btnColor.textContent = "🎨 Cambiar Color";
+    btnColor.className = "btn-add";
+    btnColor.onclick = () => abrirCambiarColor(gi);
+    div.appendChild(btnColor);
+
+    cont.appendChild(div);
+  });
+}
+
+function abrirCrearGrupo() {
+  grupoEditando = null;
+  document.getElementById("modalTitulo").textContent = "Crear Grupo";
+  document.getElementById("nombreGrupo").value = "";
+  mostrarPaleta();
+  document.getElementById("modalGrupo").style.display = "block";
+}
+
+function abrirCambiarColor(indice) {
+  grupoEditando = indice;
+  document.getElementById("modalTitulo").textContent = "Cambiar Color del Grupo";
+  document.getElementById("nombreGrupo").value = "";
+  mostrarPaleta();
+  document.getElementById("modalGrupo").style.display = "block";
+}
+
+function mostrarPaleta() {
+  const paletaDiv = document.getElementById("paleta");
+  paletaDiv.innerHTML = "";
+  colores.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "color-cuadro";
+    div.style.background = c;
+    div.onclick = () => colorSeleccionado = c;
+    paletaDiv.appendChild(div);
+  });
+}
+
+function cerrarModal() {
+  document.getElementById("modalGrupo").style.display = "none";
+}
+
+function guardarGrupo() {
+  const pc = document.getElementById("pc").value;
+  const data = obtenerConfig();
+  if (!data[pc]) data[pc] = { macros: [] };
+
+  if (grupoEditando === null) {
+    const nombre = document.getElementById("nombreGrupo").value.trim();
+    if (!nombre) { alert("Escribe un nombre"); return; }
+    data[pc].macros.push({ titulo: nombre, color: colorSeleccionado, botones: [] });
+  } else {
+    data[pc].macros[grupoEditando].color = colorSeleccionado;
+  }
+
+  guardarConfig(data);
+  mostrarConfig();
+  cerrarModal();
+}
+
+mostrarConfig();
+</script>
 </body>
 </html>
+
