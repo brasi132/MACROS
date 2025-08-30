@@ -11,8 +11,8 @@ select, input, button { margin: 5px; padding: 8px; border-radius: 5px; }
 .grupo { border: 2px solid #ccc; padding: 15px; margin: 15px 0; border-radius: 8px; background: #fff; }
 .titulo-grupo { font-weight: bold; margin-bottom: 10px; }
 .boton-item { background: #eee; margin: 5px 0; padding: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
-.btn-add { background: #4CAF50; color: white; cursor: pointer; }
-.btn-del { background: #f44336; color: white; cursor: pointer; }
+.btn-add { background: #4CAF50; color: white; cursor: pointer; margin-left: 3px; }
+.btn-del { background: #f44336; color: white; cursor: pointer; margin-left: 3px; }
 .color-paleta { display: flex; flex-wrap: wrap; margin: 10px 0; }
 .color-cuadro { width: 30px; height: 30px; margin: 3px; border-radius: 5px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 2px rgba(0,0,0,0.5); }
 .color-cuadro:hover { transform: scale(1.1); }
@@ -47,7 +47,7 @@ select, input, button { margin: 5px; padding: 8px; border-radius: 5px; }
 <script>
 const colores = ["#4A90E2","#2ECC71","#FF6F61","#9B59B6","#F1C40F","#34495E","#5DADE2","#E67E22","#1ABC9C"];
 let colorSeleccionado = colores[0];
-let grupoEditando = null;
+let grupoEditando = null; // índice del grupo que se está editando, null si es nuevo
 
 function obtenerConfig() {
   return JSON.parse(localStorage.getItem("config")) || {};
@@ -73,10 +73,13 @@ function mostrarConfig() {
     titulo.textContent = grupo.titulo + " (" + grupo.color + ")";
     div.appendChild(titulo);
 
+    // Botones del grupo
     grupo.botones.forEach((b, bi) => {
       const item = document.createElement("div");
       item.className = "boton-item";
       item.innerHTML = `<span>${b.texto} → ${b.mensaje}</span>`;
+
+      // Botón eliminar
       const btnDel = document.createElement("button");
       btnDel.textContent = "🗑️";
       btnDel.className = "btn-del";
@@ -87,16 +90,35 @@ function mostrarConfig() {
         mostrarConfig();
       };
       item.appendChild(btnDel);
+
+      // Botón editar
+      const btnEdit = document.createElement("button");
+      btnEdit.textContent = "✏️ Editar";
+      btnEdit.className = "btn-add";
+      btnEdit.onclick = () => {
+        const nuevoTexto = prompt("Nuevo texto del botón:", b.texto);
+        if(nuevoTexto === null) return;
+        const nuevoMensaje = prompt("Nuevo mensaje a copiar (usa \\n para saltos de línea):", b.mensaje);
+        if(nuevoMensaje === null) return;
+
+        grupo.botones[bi] = { texto: nuevoTexto, mensaje: nuevoMensaje };
+        data[pc] = config;
+        guardarConfig(data);
+        mostrarConfig();
+      };
+      item.appendChild(btnEdit);
+
       div.appendChild(item);
     });
 
+    // Botón agregar botón
     const btnAdd = document.createElement("button");
     btnAdd.textContent = "➕ Agregar Botón";
     btnAdd.className = "btn-add";
     btnAdd.onclick = () => {
       const texto = prompt("Texto del botón:");
       if(!texto) return;
-      const mensaje = prompt("Mensaje a copiar:");
+      const mensaje = prompt("Mensaje a copiar (usa \\n para saltos de línea):");
       if(!mensaje) return;
       grupo.botones.push({texto, mensaje});
       data[pc] = config;
@@ -105,6 +127,7 @@ function mostrarConfig() {
     };
     div.appendChild(btnAdd);
 
+    // Botón eliminar grupo
     const btnDelGrupo = document.createElement("button");
     btnDelGrupo.textContent = "🗑️ Eliminar Grupo";
     btnDelGrupo.className = "btn-del";
@@ -116,6 +139,7 @@ function mostrarConfig() {
     };
     div.appendChild(btnDelGrupo);
 
+    // Botón cambiar color
     const btnColor = document.createElement("button");
     btnColor.textContent = "🎨 Cambiar Color";
     btnColor.className = "btn-add";
@@ -126,6 +150,7 @@ function mostrarConfig() {
   });
 }
 
+// Modal crear grupo
 function abrirCrearGrupo() {
   grupoEditando = null;
   document.getElementById("modalTitulo").textContent = "Crear Grupo";
@@ -134,6 +159,7 @@ function abrirCrearGrupo() {
   document.getElementById("modalGrupo").style.display = "block";
 }
 
+// Modal cambiar color
 function abrirCambiarColor(indice) {
   grupoEditando = indice;
   document.getElementById("modalTitulo").textContent = "Cambiar Color del Grupo";
