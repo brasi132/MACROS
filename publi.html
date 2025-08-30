@@ -17,7 +17,6 @@
       padding: 20px; 
       margin: 20px 0; 
       color: white; 
-      position: relative;
     }
     .titulo-grupo { 
       text-align: center; 
@@ -30,16 +29,13 @@
       width: 100%; 
       margin: 8px 0; 
       padding: 12px; 
-      border: none; 
+      border: 2px solid white;   /* borde blanco */
       border-radius: 8px; 
       font-size: 16px; 
       font-weight: bold;
       cursor: pointer; 
-      transition: transform 0.15s, opacity 0.15s;
-    }
-    .boton:hover { 
-      transform: scale(1.05); 
-      opacity: 0.9; 
+      background: rgba(255,255,255,0.2); /* fondo semitransparente */
+      color: white;
     }
   </style>
 </head>
@@ -71,15 +67,11 @@
         titulo.textContent = grupo.titulo;
         div.appendChild(titulo);
 
-        // Botones con color similar al cuadrado
+        // Botones
         grupo.botones.forEach(b => {
           const btn = document.createElement("button");
           btn.className = "boton";
           btn.textContent = b.texto;
-
-          // color más claro del grupo para el botón
-          btn.style.background = grupo.color + "cc"; // mismo color con transparencia
-          btn.style.color = "white";
 
           btn.onclick = () => {
             navigator.clipboard.writeText(b.mensaje);
