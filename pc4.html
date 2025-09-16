@@ -73,8 +73,10 @@
   <div class="grupo utilidad">
     <div class="titulo-seccion">UTILIDAD</div>
     <button class="boton" onclick="copiarTexto('👋 ¡Bienvenido a la mejor experiencia de entretenimiento! 🥳\n✨ SOMOS 300VIP ✨ \nDisfrutá de una PL4TAF0RMA confiable con +2000 jueg0s 0nline 🎮 \n📍 C4RG4 MÍNIMA: $2000 \n📍 RET1R0 MÍNIMO: $5000 \n🕐 Atención personalizada las 24hs.')">Info</button>
-<button class="boton" onclick="copiarTexto('m04.bet300vip.com')">LINK</button>
-    <button class="boton" onclick="copiarTexto('Listo saldo cargado!\nimportante\nen caso de no llegar a los dos tildes, podes encontrar nuestro actual numero en la plataforma o usar el chat\nm04.bet300vip.com')">Cargado</button>
+<button class="boton" onclick="copiarTexto('m04.bet300vip.com')">LINK PC4</button>
+<button class="boton" onclick="copiarTexto('m05.bet300vip.com')">LINK PC5</button>
+    <button class="boton" onclick="copiarTexto('Listo saldo cargado!\nimportante\nen caso de no llegar a los dos tildes, podes encontrar nuestro actual numero en la plataforma o usar el chat\nm04.bet300vip.com')">Cargado PC4</button>
+    <button class="boton" onclick="copiarTexto('Listo saldo cargado!\nimportante\nen caso de no llegar a los dos tildes, podes encontrar nuestro actual numero en la plataforma o usar el chat\nm05.bet300vip.com')">Cargado PC5</button>
     <button class="boton" onclick="copiarTexto('¡Felicidades, te pido que me des el cbu, titular y monto para poder transferir el premio, gracias!  🤩 🍀 🥳')">Retiro</button>
     <button class="boton" onclick="copiarTexto('¡Felicidades, Recorda que puede pedir un retiro nuevamente despues de las  24HS, gracias!  🤩 🍀 🥳')">Retiro Realizado</button>
   </div>
@@ -110,9 +112,14 @@
 
   <!-- CREAR USUARIO -->
   <div class="grupo reinvinculacion">
-    <div class="titulo-seccion">CREAR USUARIO</div>
+    <div class="titulo-seccion">CREAR USUARIO PC4</div>
     <input type="text" id="nuevoUsuario" placeholder="Escribe un nombre de usuario...">
     <button class="boton" onclick="crearUsuario()">Generar Usuario</button>
+  </div>
+    <div class="grupo reinvinculacion">
+    <div class="titulo-seccion">CREAR USUARIO PC5</div>
+    <input type="text" id="nuevoUsuario" placeholder="Escribe un nombre de usuario...">
+    <button class="boton" onclick="crearUsuario2()">Generar Usuario</button>
   </div>
 
   <!-- REINVITACIÓN -->
@@ -144,6 +151,15 @@
         return;
       }
       const mensaje = "Usuario: " + usuario + "\nContraseña: 12345a\nm04.bet300vip.com";
+      copiarTexto(mensaje);
+    }
+        function crearUsuario2() {
+      const usuario = document.getElementById("nuevoUsuario").value.trim();
+      if (!usuario) {
+        alert("⚠️ Por favor, escribe un nombre de usuario.");
+        return;
+      }
+      const mensaje = "Usuario: " + usuario + "\nContraseña: 12345a\nm05.bet300vip.com";
       copiarTexto(mensaje);
     }
 
